@@ -14,11 +14,18 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      auth: new Auth(this.props.history)
+      auth: new Auth(this.props.history),
+      tokenRenewalComplete: false
     };
+  }
+  componentDidMount() {
+    this.state.auth.renewToken(() =>
+      this.setState({ tokenRenewalComplete: true })
+    );
   }
   render() {
     const { auth } = this.state;
+    if (!this.state.tokenRenewalComplete) return "loading...";
     return (
       <AuthContext.Provider value={auth}>
         <Nav auth={auth} />
